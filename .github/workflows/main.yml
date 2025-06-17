@@ -27,11 +27,4 @@ jobs:
         run: npm run build
         working-directory: ess-frontent-main-may12
 
-      - name: Deploy to EC2 using SCP
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "ess/build/*"              
-          target: "/Downloads/ess-frontent-main-may2"
+      
