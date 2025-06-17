@@ -1,4 +1,4 @@
-name: Frontend CI/CD
+name: React CI/CD
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,22 +21,17 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory:  ess-frontent-main-may12
+        working-directory: ess-frontent-main-may12
 
       - name: Build React App
         run: npm run build
         working-directory: ess-frontent-main-may12
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Copy files to EC2 via SCP
+      - name: Deploy to EC2 using SCP
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/*"
-          target: "/home/ubuntu/your-frontend-repo/build"
+          source: "ess/build/*"              
+          target: "/home/ubuntu/frontend-app"
