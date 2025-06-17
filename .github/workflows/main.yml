@@ -2,19 +2,13 @@ name: Frontend CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: frontend
 
     steps:
       - name: ✅ Checkout code
@@ -29,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: 🧪 Run tests (optional)
-        run: npm test || true  # skip error if no tests
+        run: npm test || true
 
       - name: 🌐 Build frontend
         run: npm run build
@@ -38,4 +32,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: frontend/build/
+          path: build/
