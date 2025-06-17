@@ -20,7 +20,8 @@ jobs:
           node-version: '18'
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: npm install
+
 
       - name: 🧪 Run tests (optional)
         run: npm test || true
