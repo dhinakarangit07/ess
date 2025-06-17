@@ -34,4 +34,4 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "ess/build/*"              
-          target: "/home/ubuntu/frontend-app"
+          target: "/Downloads/ess-frontent-main-may2"
