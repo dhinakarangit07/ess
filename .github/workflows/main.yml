@@ -1,4 +1,4 @@
-name: ESS CI/CD
+name: ESS Fullstack CI/CD
 
 on:
   push:
@@ -12,21 +12,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          path: ess  # Checkout into "ess" folder
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install backend dependencies (root)
+      - name: Install backend dependencies
+        working-directory: ess
         run: npm install
 
       - name: Install frontend dependencies
-        working-directory: frontend
+        working-directory: ess/frontend
         run: npm install
 
       - name: Build frontend
-        working-directory: frontend
+        working-directory: ess/frontend
         run: npm run build
 
       - name: Deploy to EC2 via SSH
@@ -50,5 +53,5 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "frontend/build/*"
+          source: "ess/frontend/build/*"
           target: "/home/${{ secrets.EC2_USER }}/ess/frontend/build"
