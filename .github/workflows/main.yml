@@ -3,14 +3,6 @@ name: Frontend CI/CD
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:name: Frontend CI/CD
-
-on:
-  push:
-    branches: [main]
 
 jobs:
   build:
@@ -44,58 +36,3 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "build/*"
           target: "/home/ubuntu/your-frontend-repo/build"
-
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm install
-
-      - name: Build frontend
-        working-directory: frontend
-        run: npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: frontend/build/
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Deploy frontend to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT || '22' }}
-          source: "frontend/build/*"
-          target: "/home/${{ secrets.EC2_USER }}/ess/frontend/build"
-
-      - name: (Optional) Restart Nginx or Web Server on EC2
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT || '22' }}
-          script: |
-            sudo systemctl restart nginx
