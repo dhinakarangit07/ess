@@ -34,7 +34,7 @@ jobs:
           npm run build
 
       - name: Install & test backend
-        if: -f ./backend/package.json
+        
         working-directory: ./backend
         run: |
           npm install
