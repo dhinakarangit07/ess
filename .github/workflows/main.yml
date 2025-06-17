@@ -1,4 +1,4 @@
-name: ESS App CI/CD
+name: Frontend CI/CD
 
 on:
   push:
@@ -7,17 +7,11 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
-    services:
-      redis:
-        image: redis:6
-        ports:
-          - 6379:6379
-
     steps:
-      - name: Check out repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -25,39 +19,40 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install backend dependencies
+      - name: Install frontend dependencies
+        working-directory: frontend
         run: npm install
 
-      - name: Lint code (optional)
-        run: |
-          if [ -f package.json ]; then npm run lint || echo "No lint script"; fi
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
 
-      - name: Install & build frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
-
-      - name: Test backend
-        run: |
-          if [ -f package.json ]; then npm test || echo "No test script"; fi
-
-      - name: Upload frontend build artifact
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
           path: frontend/build/
 
   deploy:
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Check out repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Deploy to EC2 via SSH
+      - name: Deploy frontend to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT || '22' }}
+          source: "frontend/build/*"
+          target: "/home/${{ secrets.EC2_USER }}/ess/frontend/build"
+
+      - name: (Optional) Restart Nginx or Web Server on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -65,14 +60,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_SSH_PORT || '22' }}
           script: |
-            cd ~/ess || {
-              git clone https://github.com/dhinakarangit07/ess.git
-              cd ess
-            }
-            git pull origin main
-            npm install --production
-            cd frontend
-            npm install
-            npm run build
-            cd ..
-            pm2 restart ess || pm2 start index.js --name ess
+            sudo systemctl restart nginx
