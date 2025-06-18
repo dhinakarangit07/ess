@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest # Use GitHub runner, not ec2-user
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
@@ -33,7 +33,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "ess-frontent-main-may12/build/*"
-          target: ${{ secrets.EC2_TARGET_DIR }}
+          source: "ess-frontent-main-may12/build/**"
+          target: "/home/ec2-user/frontend-app"
           strip_components: 0
           debug: true
