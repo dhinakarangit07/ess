@@ -33,15 +33,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "ess-frontent-main-may12/build"
+          port: 22
+          source: "ess-frontent-main-may12/build/*"
           target: "/home/ec2-user/frontend-app"
+          strip_components: 0
           debug: true
-
-      - name: build
-        uses: ec2 copy
-        with:
-             host: ${{ ip address }}
-             username: root
-             key: ${{ private_KEY }}
-             port: 22
-             source: ./build
