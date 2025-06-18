@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ec2-user
+    runs-on: ubuntu-latest # Use GitHub runner, not ec2-user
 
     steps:
       - name: Checkout Code
@@ -27,7 +27,7 @@ jobs:
         run: npm run build
         working-directory: ess-frontent-main-may12
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 using SCP
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -35,3 +35,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "ess-frontent-main-may12/build/*"
           target: ${{ secrets.EC2_TARGET_DIR }}
+          strip_components: 0
+          debug: true
