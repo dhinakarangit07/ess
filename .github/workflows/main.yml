@@ -33,5 +33,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "ess-frontent-main-may12/build/*"
+          source: "ess-frontent-main-may12/build"
           target: "/home/ec2-user/frontend-app"
+          debug: true
