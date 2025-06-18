@@ -35,4 +35,3 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "ess-frontent-main-may12/build/*"
           target: ${{ secrets.EC2_TARGET_DIR }}
-          debug : true
