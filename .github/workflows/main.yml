@@ -36,3 +36,12 @@ jobs:
           source: "ess-frontent-main-may12/build"
           target: "/home/ec2-user/frontend-app"
           debug: true
+
+      - name: build
+        uses: ec2 copy
+        with:
+             host: ${{ ip address }}
+             username: root
+             key: ${{ private_KEY }}
+             port: 22
+             source: ./build
