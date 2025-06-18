@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,3 +26,12 @@ jobs:
       - name: Build Project
         run: npm run build
         working-directory: ess-frontent-main-may12
+
+      - name: Copy Build Folder to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "ess-frontent-main-may12/build/*"
+          target: "/home/ec2-user/frontend-app"
