@@ -41,7 +41,7 @@ jobs:
             sudo mkdir -p /var/www/html/frontend
             sudo chown -R ec2-user:ec2-user /var/www/html/frontend
 
-      - name: Copy Build to EC2: /var/www/html/frontend
+      - name: Copy Build to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -50,5 +50,4 @@ jobs:
           port: 22
           source: "ess-frontent-main-may12/build/*"
           target: "/var/www/html/frontend"
-          strip_components: 0
           debug: true
