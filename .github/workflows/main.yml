@@ -48,6 +48,6 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "ess-frontent-main-may12/dist/*"
+          source: "ess-frontent-main-may12/dist/**"
           target: "/var/www/html/frontend"
           debug: true
