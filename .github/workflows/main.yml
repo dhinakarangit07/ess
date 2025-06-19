@@ -1,4 +1,3 @@
-Frontend
 name: Frontend CI/CD
 
 on:
@@ -51,4 +50,3 @@ jobs:
           port: 22
           source: "ess-frontent-main-may12/dist/*"
           target: "/var/www/html/frontend"
-          debug: true
