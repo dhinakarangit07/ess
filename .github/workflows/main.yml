@@ -20,17 +20,22 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
         working-directory: ess-frontent-main-may12
 
       - name: Build Project
         run: npm run build
         working-directory: ess-frontent-main-may12
 
-      - name: Debug – List Dist Folder
-        run: ls -la ess-frontent-main-may12/dist
+      - name: Verify Build Output
+        run: |
+          if [ ! -d "ess-frontent-main-may12/dist" ]; then
+            echo "❌ Build folder not found!"
+            exit 1
+          fi
+          ls -lah ess-frontent-main-may12/dist
 
-      - name: Ensure target directory exists on EC2
+      - name: Prepare EC2 Target Directory
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -48,6 +53,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "ess-frontent-main-may12/dist/*"
+          source: "ess-frontent-main-may12/dist/**"
           target: "/var/www/html/frontend"
           debug: true
+
